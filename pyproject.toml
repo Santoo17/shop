@@ -1,0 +1,20 @@
+[project]
+name = "santo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.141.1",
+    "psycopg2-binary>=2.9.12",
+    "pydantic-settings>=2.15.0",
+    "sqlalchemy>=2.0.52",
+    "uvicorn[standard]>=0.52.4",
+]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.16.0",
+    "hypothesis>=6.167.1",
+    "pytest>=9.1.1",
+]
