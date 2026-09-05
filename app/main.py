@@ -1,6 +1,5 @@
-def main():
-    print("Hello from santo!")
+from fastapi import FastAPI
+from app.routers import auth
 
-
-if __name__ == "__main__":
-    main()
+app = FastAPI(title="Bazar")
+app.include_router(auth.router)

@@ -25,3 +25,7 @@ class UserUpdate(BaseModel):
     nome: str | None = None
     cognome: str | None = None
     indirizzo: str | None = None
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
