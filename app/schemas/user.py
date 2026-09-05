@@ -17,10 +17,6 @@ class UserRead(BaseModel):
     indirizzo: str | None
     saldo: float
 
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
-
 class UserUpdate(BaseModel):
     nome: str | None = None
     cognome: str | None = None

@@ -2,9 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
+from fastapi.security import OAuth2PasswordRequestForm
+
 from app.core.database import get_db
 from app.models import User, UserRole
-from app.schemas import UserRead, UserCreate, UserLogin, Token
+from app.schemas import UserRead, UserCreate, Token
 from app.auth import hash_password, verify_password, create_access_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -30,8 +32,8 @@ def register(dati: UserCreate, db: Session = Depends(get_db)):
     return nuovo_utente
 
 @router.post("/login", response_model= Token)
-def login(dati: UserLogin, db: Session = Depends(get_db)):
-    query= select(User).where(User.email == dati.email)
+def login(dati: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    query= select(User).where(User.email == dati.username)
     utente = db.execute(query).scalar_one_or_none()
     if not utente or not verify_password(dati.password , utente.password_digest):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenziali non valide")
