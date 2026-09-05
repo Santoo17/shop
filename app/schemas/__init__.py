@@ -1,4 +1,4 @@
-from app.schemas.user import UserRead, UserCreate, UserUpdate, Token
+from app.schemas.user import UserRead, UserCreate, UserUpdate, Token, AdminUpdate
 from app.schemas.product import ProductRead, ProductCreate, ProductUpdate
 from app.schemas.order import (
     CheckoutItem,

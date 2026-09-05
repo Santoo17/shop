@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 
 class UserCreate(BaseModel):
     nome: str
@@ -25,3 +25,9 @@ class UserUpdate(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class AdminUpdate(BaseModel):
+    nome: str | None = None
+    cognome: str | None = None
+    indirizzo: str | None = None
+    saldo: float | None = Field(default=None, ge=0.0, description="Il saldo non può essere negativo")
