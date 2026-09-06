@@ -3,7 +3,7 @@ from app.models import OrderStatus
 TRANSIZIONI_VALIDE = {
     OrderStatus.CONFERMATO: [OrderStatus.SPEDITO, OrderStatus.ANNULLATO],
     OrderStatus.SPEDITO: [OrderStatus.CONSEGNATO, OrderStatus.ANNULLATO],
-    OrderStatus.CONSEGNATO: [],
+    OrderStatus.CONSEGNATO: [OrderStatus.ANNULLATO],
     OrderStatus.ANNULLATO: [],
 }
 
