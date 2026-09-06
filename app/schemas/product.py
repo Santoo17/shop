@@ -29,6 +29,7 @@ class ProductRead(BaseModel):
     descrizione: str | None
     prezzo: float
     giacenza: int
+    valutazione_media: float | None
 
 class ProductUpdate(BaseModel):
     nome: str | None = None

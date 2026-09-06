@@ -5,6 +5,7 @@ import enum
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.models.order import Order
+    from app.models.review import Review
 class UserRole(str, enum.Enum):
     STANDARD = "standard"
     ADMIN = "admin"
@@ -20,4 +21,6 @@ class User(Base):
     password_digest: Mapped[str] = mapped_column(String(255), nullable=False)
     indirizzo: Mapped[str | None] = mapped_column(String(255), nullable=True)
     saldo: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+
     orders: Mapped[list["Order"]] = relationship(back_populates="user")
+    reviews: Mapped[list["Review"]] = relationship(back_populates="user")
