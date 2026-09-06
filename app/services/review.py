@@ -51,7 +51,7 @@ def ricalcola_valutazione_media(db: Session, prodotto_id: int):
 
 
 def aggiorna_recensione(db: Session, recensione: Review, dati: ReviewUpdate, utente: User) -> Review:
-    if recensione.user_id != utente.id and utente.ruolo != UserRole.ADMIN:
+    if recensione.user_id != utente.id:
         raise ValueError("L'utente non è autorizzato ad aggiornare questa recensione.")
     aggiornamenti = dati.model_dump(exclude_unset=True)
     for chiave, valore in aggiornamenti.items():
