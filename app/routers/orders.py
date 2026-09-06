@@ -7,7 +7,7 @@ from app.models import User, UserRole, Order, OrderStatus
 from app.schemas import CheckoutRequest, OrderRead, OrderStatusUpdate
 from app.auth import get_current_user, require_admin_user
 from app.services.checkout import checkout, RigaCarrello
-from app.services import cambia_stato_ordine
+from app.services import cambia_stato_ordine, richiedi_rimborso
 
 router = APIRouter(tags=["orders"])
 
@@ -67,4 +67,15 @@ def aggiorna_stato_ordine( order_id: int, dati: OrderStatusUpdate, db: Session =
     db.commit()
     db.refresh(ordine)
     return ordine
-    
+
+@router.post("/orders/{order_id}/rimborso", response_model=OrderRead)
+def richiedi_rimborso_ordine(order_id: int, db: Session = Depends(get_db), utente: User = Depends(get_current_user)):
+    ordine = db.get(Order, order_id)
+    if ordine is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ordine non trovato")
+    try:
+        richiedi_rimborso(db, ordine, utente)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    db.refresh(ordine)
+    return ordine

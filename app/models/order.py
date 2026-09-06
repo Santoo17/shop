@@ -12,6 +12,7 @@ class OrderStatus(str, enum.Enum):
     SPEDITO = "Spedito"
     CONSEGNATO = "Consegnato"
     ANNULLATO = "Annullato"
+    RIMBORSATO = "Rimborsato"
 
 class Order(Base):
     __tablename__="orders"
