@@ -9,5 +9,6 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str 
     access_token_expire_minutes: int
+    test_database_url: str
 
 settings = Settings()
