@@ -2,7 +2,6 @@ import pytest
 from app.models import DiscountCode
 import uuid
 from app.services import applica_sconto
-from tests.conftest import db_session
 from hypothesis import given, strategies as st, settings, HealthCheck
 
 
