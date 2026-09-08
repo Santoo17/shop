@@ -28,7 +28,7 @@ def test_codice_sconto_invalido_da_errore(db_session):
 @settings(suppress_health_check=[HealthCheck.function_scoped_fixture], max_examples=100)
 @given(totale=st.floats(min_value=0.01, max_value=10000, allow_nan=False), percentuale=st.integers(min_value=1, max_value=25))
 def test_sconto_non_da_totale_negativo(db_session, totale, percentuale):
-    codice_univoco: str = f"PBTTEST_{uuid.uuid4().hex[:8]}"
+    codice_univoco: str = f"codice_{uuid.uuid4().hex[:8]}"
     codice_sconto: DiscountCode = DiscountCode(codice=codice_univoco, percentuale=percentuale, attivo=True)
     db_session.add(codice_sconto)
     db_session.commit()
