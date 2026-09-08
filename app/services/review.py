@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models import Review, Product, OrderItem, Order, OrderStatus, User, UserRole
-from app.schemas import ReviewCreate, ReviewRead, ReviewUpdate
+from app.schemas import ReviewCreate, ReviewUpdate
 
 def ha_acquistato_prodotto(db: Session, utente_id: int, prodotto_id: int) -> bool:
     query = select(OrderItem).join(Order).where(
