@@ -1,6 +1,3 @@
-from urllib import response
-
-
 def test_leggi_sconti(client):
     response = client.get("/discounts")
     assert response.status_code == 200

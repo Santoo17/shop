@@ -87,3 +87,38 @@ def test_aggiornamento_prodotto_da_utente_normale(client, get_user_token, admin_
     }, headers={"Authorization": f"Bearer {get_user_token()}"})
 
     assert response.status_code == 403
+
+def test_admin_aumenta_giacenza_prodotto(client, admin_token, make_product):
+    admin = admin_token
+    prodotto: Product = make_product(giacenza=0)
+    response = client.post("/products/", json={
+        "nome": prodotto.nome,
+        "descrizione": prodotto.descrizione,
+        "prezzo": prodotto.prezzo,
+        "giacenza": prodotto.giacenza
+    }, headers={"Authorization": f"Bearer {admin}"})
+    assert response.status_code == 201
+    prodotto_id = response.json()["id"]
+
+    response = client.put(f"/products/{prodotto_id}/add_giacenza", json={"giacenza": 10}, headers={"Authorization": f"Bearer {admin}"})
+    assert response.json()["giacenza"] == 10
+    assert response.status_code == 200
+    
+
+def test_admin_aumenta_giacenza_prodotto_che_non_esiste(client, admin_token):
+    admin = admin_token
+    response = client.put(f"/products/9999/add_giacenza", json={"giacenza": 10}, headers={"Authorization": f"Bearer {admin}"})
+    assert response.status_code == 404
+
+def test_utente_standard_aumenta_giacenza_prodotto_fallisce(client, get_user_token, make_product, admin_token):
+    user_token = get_user_token()
+    prodotto: Product = make_product(giacenza=0)
+    response = client.post("/products/", json={
+        "nome": prodotto.nome,
+        "descrizione": prodotto.descrizione,
+        "prezzo": prodotto.prezzo,
+        "giacenza": prodotto.giacenza
+    }, headers={"Authorization": f"Bearer {admin_token}"})
+
+    response = client.put(f"/products/{response.json()['id']}/add_giacenza", json={"giacenza": 10}, headers={"Authorization": f"Bearer {user_token}"})
+    assert response.status_code == 403

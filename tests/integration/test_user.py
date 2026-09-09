@@ -1,6 +1,3 @@
-from app.models import User, UserRole
-from tests.conftest import client
-
 def test_utente_visualizza_se_stesso(client, get_user_token):
     user_token = get_user_token()
     response = client.get("/users/me", headers={"Authorization": f"Bearer {user_token}"})
@@ -14,8 +11,8 @@ def test_utente_modica_se_stesso(client, get_user_token):
     assert response.json()["nome"] == "NuovoNome"
 
 def test_utente_modifica_altri_fallisce(client, get_user_token):
-    user= client.post("/auth/register", json={ "nome": "User1","cognome": "User1Cognome", "email": "user1@example.com", "password": "password123" })
-    user_id = user.json()["id"]
+    response= client.post("/auth/register", json={ "nome": "User1","cognome": "User1Cognome", "email": "user1@example.com", "password": "password123" })
+    user_id = response.json()["id"]
     user2= get_user_token()
 
     response = client.put(f"/users/{user_id}", headers={"Authorization": f"Bearer {user2}"}, json={"nome": "NuovoNome"})
