@@ -50,3 +50,6 @@ class ProductUpdate(BaseModel):
         if valore is not None and valore < 0:
             raise ValueError("La giacenza non può essere negativa")
         return valore
+
+class ProductAddGiacenza(BaseModel):
+    giacenza: int = Field(ge=0, description="La giacenza da aggiungere non può essere negativa")

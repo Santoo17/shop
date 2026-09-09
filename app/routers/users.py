@@ -4,7 +4,7 @@ from sqlalchemy import select
 
 from app.core import get_db
 from app.models import User
-from app.schemas import UserRead, UserUpdate, AdminUpdate
+from app.schemas import UserRead, UserUpdate, AdminUpdate, AdminAddSaldo
 from app.auth import get_current_user, require_admin_user
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -54,3 +54,13 @@ def delete_user(user_id: int, db: Session = Depends(get_db), admin: User = Depen
     db.delete(utente)
     db.commit()
     return None
+
+@router.put("/{user_id}/add_saldo", response_model=UserRead)
+def add_saldo(user_id: int, dati: AdminAddSaldo, db: Session = Depends(get_db), admin: User = Depends(require_admin_user)):
+    utente = db.get(User, user_id)
+    if not utente:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Utente non trovato")
+    utente.saldo += dati.saldo
+    db.commit()
+    db.refresh(utente)
+    return utente

@@ -4,7 +4,7 @@ from sqlalchemy import select
 
 from app.core.database import get_db
 from app.models import User, Product, UserRole
-from app.schemas import ProductCreate, ProductRead, ProductUpdate
+from app.schemas import ProductCreate, ProductRead, ProductUpdate, ProductAddGiacenza
 from app.auth import require_admin_user
 
 router = APIRouter(prefix="/products", tags=["products"])
@@ -62,3 +62,20 @@ def elimina_prodotto(product_id: int, db: Session = Depends(get_db), admin: User
     db.delete(prodotto)
     db.commit()
     return None
+
+
+@router.put("/{product_id}/add_giacenza", response_model=ProductRead)
+def add_giacenza_prodotto(
+    product_id: int,
+    dati: ProductAddGiacenza,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_admin_user)
+):
+    prodotto = db.get(Product, product_id)
+    if not prodotto:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Prodotto non trovato")
+    
+    prodotto.giacenza += dati.giacenza
+    db.commit()
+    db.refresh(prodotto)
+    return prodotto

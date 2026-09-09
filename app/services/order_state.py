@@ -22,7 +22,7 @@ def richiedi_rimborso(db: Session, ordine: Order, richiedente: User):
     elif ordine.stato == OrderStatus.CONSEGNATO:
         nuovo_stato = OrderStatus.RIMBORSATO
     else:
-        raise ValueError(f"Non è possibile richiedere un rimborso per un ordine con stato {ordine.stato}.")
+        raise ValueError(f"Non è possibile richiedere un rimborso per un ordine con stato {ordine.stato.value}.")
 
     try:
         cambia_stato_ordine(nuovo_stato, ordine.stato)

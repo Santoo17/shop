@@ -31,3 +31,6 @@ class AdminUpdate(BaseModel):
     cognome: str | None = None
     indirizzo: str | None = None
     saldo: float | None = Field(default=None, ge=0.0, description="Il saldo non può essere negativo")
+
+class AdminAddSaldo(BaseModel):
+    saldo: float = Field( ge=0.0, description="Il saldo da aggiungere non può essere negativo")
