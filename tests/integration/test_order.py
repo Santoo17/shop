@@ -1,6 +1,5 @@
-from app.models import User, UserRole, Product, DiscountCode, Order, OrderStatus, product
-from app.auth import hash_password
-from tests.conftest import db_session, make_product
+from app.models import  UserRole, OrderStatus 
+
 
 def test_ordine_creato_con_successo(client, db_session, get_user_token, make_product):
     user = get_user_token()
@@ -120,3 +119,26 @@ def test_utente_non_visualizza_dettaglio_ordine_altri(client, make_order, db_ses
     user2= get_user_token()
     response = client.get(f"/orders/{ordine.id}", headers={"Authorization": f"Bearer {user2}"})
     assert response.status_code == 404
+
+
+def test_rimborso_ordine(client, make_order, db_session):
+    ordine, user, token = make_order()
+    db_session.add(ordine)
+    db_session.commit()
+    response = client.post(f"/orders/{ordine.id}/rimborso", headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["stato"] == OrderStatus.ANNULLATO or data["stato"] == OrderStatus.RIMBORSATO
+
+def test_rimborso_ordine_non_autorizzato(client, make_order, db_session, get_user_token):
+    ordine, user, token = make_order()
+    db_session.add(ordine)
+    db_session.commit()
+    user2 = get_user_token()
+    response = client.post(f"/orders/{ordine.id}/rimborso", headers={"Authorization": f"Bearer {user2}"})
+    assert response.status_code == 400
+
+def test_rimborso_ordine_non_trovato(client, get_user_token):
+    user = get_user_token()
+    response = client.post(f"/orders/9999/rimborso", headers={"Authorization": f"Bearer {user}"})
+    assert response.status_code == 404   
