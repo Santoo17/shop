@@ -157,5 +157,3 @@ def get_user_token(db_session, client):
         return response.json()["access_token"]
     return _get_user_token
 
-
-    

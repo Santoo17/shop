@@ -5,7 +5,7 @@ from sqlalchemy import select
 from app.core import get_db
 from app.models import DiscountCode, User
 from app.schemas import DiscountCodeRead, DiscountCodeCreate, DiscountCodeUpdate
-from app.auth import get_current_user, require_admin_user
+from app.auth import require_admin_user
 
 router = APIRouter(prefix="/discounts", tags=["discounts"])
 
@@ -23,7 +23,7 @@ def crea_sconto(dati: DiscountCodeCreate, db: Session = Depends(get_db), admin: 
         attivo=dati.attivo
     )
     db.add(nuovo_sconto)
-    db.commit()
+    db.commit()    
     db.refresh(nuovo_sconto)
     return nuovo_sconto
 
