@@ -10,6 +10,7 @@ app.include_router(reviews.router)
 app.include_router(discounts.router)
 
 
+
 @app.get("/")
 def read_root():
     return {"message": "Il server è attivo!"}
