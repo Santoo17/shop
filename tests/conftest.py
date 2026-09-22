@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.core.config import settings
-from app.auth import hash_password
+from app.auth import hash_password, create_access_token
 from app.core.database import get_db
 from app.models import Base, User, Product, DiscountCode, UserRole, Order, OrderStatus, Review
 
@@ -85,16 +85,14 @@ def make_discount():
     return _make_discount
 
 @pytest.fixture()
-def make_order(db_session, make_user,client):
+def make_order(db_session, make_user):
     def _make_order(**kwargs):
-        user= make_user()
+        user = make_user()
         db_session.add(user)
         db_session.commit()
-        response=client.post("/auth/login", data={
-            "username": user.email,
-            "password": "password123",
-        })
-        token = response.json()["access_token"]
+
+        token = create_access_token({"sub": str(user.id)})  # 👈 coerente col router
+
         default = {
             "user_id": user.id,
             "totale": 50.0,
@@ -117,45 +115,27 @@ def make_review(db_session):
     return _make_review
 
 @pytest.fixture()
-def admin_token(db_session, client):
+def admin_token(db_session):
     admin = User(
-        nome="Admin",
-        cognome="Test",
-        email="admin@test.com",
+        nome="Admin", cognome="Test", email="admin@test.com",
         password_digest=hash_password("password123"),
-        ruolo=UserRole.ADMIN,
-        saldo=0
+        ruolo=UserRole.ADMIN, saldo=0
     )
-
     db_session.add(admin)
     db_session.commit()
-
-    response =  client.post("/auth/login", data={
-        "username": "admin@test.com",
-        "password": "password123",
-    })
-    return response.json()["access_token"]
+    return create_access_token({"sub": str(admin.id)})
 
 @pytest.fixture()
-def get_user_token(db_session, client):
-    def _get_user_token(saldo=1500.0,  ruolo=UserRole.STANDARD):
+def get_user_token(db_session):
+    def _get_user_token(saldo=1500.0, ruolo=UserRole.STANDARD):
         email = f"user_{uuid.uuid4().hex[:6]}@test.com"
         user = User(
-            nome="User",
-            cognome="Test",
-            email=email,
+            nome="User", cognome="Test", email=email,
             password_digest=hash_password("password123"),
-            ruolo=ruolo,
-            saldo=saldo
+            ruolo=ruolo, saldo=saldo
         )
-
         db_session.add(user)
         db_session.commit()
-
-        response =  client.post("/auth/login", data={
-            "username": email,
-            "password": "password123",
-        })
-        return response.json()["access_token"]
+        return create_access_token({"sub": str(user.id)})
     return _get_user_token
 
