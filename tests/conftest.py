@@ -48,7 +48,7 @@ def client(db_session):
 @pytest.fixture
 def make_user():
     default_password_hash = hash_password("password123")
-    def _make_user(saldo=100.0, ruolo=UserRole.STANDARD, **kwargs):
+    def _make_user(saldo=1500.0, ruolo=UserRole.STANDARD, **kwargs):
         unique_email = f"user_{uuid.uuid4().hex[:6]}@example.com"
         return User(
             nome="Mario",
@@ -91,7 +91,7 @@ def make_order(db_session, make_user):
         db_session.add(user)
         db_session.commit()
 
-        token = create_access_token({"sub": str(user.id)})  # 👈 coerente col router
+        token = create_access_token({"sub": str(user.id)})  
 
         default = {
             "user_id": user.id,
@@ -115,27 +115,14 @@ def make_review(db_session):
     return _make_review
 
 @pytest.fixture()
-def admin_token(db_session):
-    admin = User(
-        nome="Admin", cognome="Test", email="admin@test.com",
-        password_digest=hash_password("password123"),
-        ruolo=UserRole.ADMIN, saldo=0
-    )
-    db_session.add(admin)
-    db_session.commit()
-    return create_access_token({"sub": str(admin.id)})
-
-@pytest.fixture()
-def get_user_token(db_session):
+def get_user_token(db_session, make_user):
     def _get_user_token(saldo=1500.0, ruolo=UserRole.STANDARD):
-        email = f"user_{uuid.uuid4().hex[:6]}@test.com"
-        user = User(
-            nome="User", cognome="Test", email=email,
-            password_digest=hash_password("password123"),
-            ruolo=ruolo, saldo=saldo
-        )
+        user = make_user(saldo=saldo, ruolo=ruolo)
         db_session.add(user)
         db_session.commit()
         return create_access_token({"sub": str(user.id)})
     return _get_user_token
 
+@pytest.fixture()
+def admin_token(get_user_token):
+    return get_user_token(saldo=0, ruolo=UserRole.ADMIN)
