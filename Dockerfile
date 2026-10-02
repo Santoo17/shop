@@ -6,7 +6,7 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 
 RUN pip install uv
-RUN uv sync --frozen 
+RUN uv sync --frozen --no-dev
 
 COPY . .
 
@@ -16,9 +16,10 @@ WORKDIR /app
 
 COPY --from=builder /app /app
 
-ENV PATH="/app/.venv/bin:$PATH"
+ENV PATH="/app/.venv/bin:$PATH" \
+    PYTHONUNBUFFERED=1
 
 
 EXPOSE 8000
 
-ENTRYPOINT ["sh", "-c", "python -m app.core.seed && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+ENTRYPOINT ["sh", "-c", "python -m app.core.seed && exec python -m uvicorn app.main:app --host 0.0.0.0 --port 8000"]
