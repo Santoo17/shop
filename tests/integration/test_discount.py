@@ -20,7 +20,7 @@ def test_utente_crea_sconto_fallito(client, get_user_token):
     }, headers={"Authorization": f"Bearer {user}"})
     assert response.status_code == 403
 
-def test_admin_aggiorna_sconto(client, admin_token, db_session):
+def test_admin_aggiorna_sconto(client, admin_token):
     admin = admin_token
 
     response = client.post("/discounts", json={
@@ -66,7 +66,7 @@ def test_utente_elimina_sconto_fallito(client, get_user_token, admin_token):
     response = client.delete(f"/discounts/{sconto_id}", headers={"Authorization": f"Bearer {user}"})
     assert response.status_code == 403
 
-def test_elimina_sconto_non_trovato(client, admin_token):
+def test_elimina_sconto_non_esistente_fallisce(client, admin_token):
     admin = admin_token
     response = client.delete("/discounts/9999", headers={"Authorization": f"Bearer {admin}"})
     assert response.status_code == 404
