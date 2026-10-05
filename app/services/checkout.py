@@ -8,7 +8,18 @@ class RigaCarrello:
     product_id: int
     quantita: int
 
+def aggrega_carrello(carrello: list[RigaCarrello]) -> dict[int, int]:
+    quantita_per_prodotto: dict[int, int] = {}
+    for riga in carrello:
+        if riga.quantita <= 0:
+            raise ValueError("La quantità deve essere maggiore di zero")
+        quantita_per_prodotto[riga.product_id] = (quantita_per_prodotto.get(riga.product_id, 0) + riga.quantita)
+    if not quantita_per_prodotto:
+        raise ValueError("Il carrello è vuoto")
+    return quantita_per_prodotto
+
 def checkout(db: Session, utente: User, carello: list[RigaCarrello], codice_sconto: str | None) -> Order:
+    quantita_per_prodotto = aggrega_carrello(carello)
     prodotti: list[tuple[Product, int]] = [ ]
     for riga in carello:
         prodotto= db.get(Product, riga.product_id)
