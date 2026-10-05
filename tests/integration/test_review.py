@@ -1,4 +1,3 @@
-
 from app.models import OrderStatus, Order
 def test_utente_fa_recensione_per_prodotto_acquistato_e_consegnato(client, db_session, get_user_token, make_product):
     user=get_user_token()
