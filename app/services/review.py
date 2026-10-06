@@ -5,7 +5,6 @@ from app.models import Review, Product, OrderItem, Order, OrderStatus, User, Use
 from app.schemas import ReviewCreate, ReviewUpdate
 
 
-
 def calcola_media(valutazioni: list[int]) -> float | None:
     if not valutazioni:
         return None
@@ -45,10 +44,16 @@ def ricalcola_valutazione_media(db: Session, prodotto_id: int) -> None:
     db.refresh(prodotto)
 
 
-def crea_recensione(db: Session, utente_id: int, prodotto_id: int, dati: ReviewCreate) -> Review:
+def crea_recensione(
+    db: Session, utente_id: int, prodotto_id: int, dati: ReviewCreate
+) -> Review:
     if not ha_acquistato_prodotto(db, utente_id, prodotto_id):
-        raise ValueError("L'utente non ha acquistato questo prodotto e non può recensirlo.")
-    query = select(Review).where(Review.user_id == utente_id, Review.product_id == prodotto_id)
+        raise ValueError(
+            "L'utente non ha acquistato questo prodotto e non può recensirlo."
+        )
+    query = select(Review).where(
+        Review.user_id == utente_id, Review.product_id == prodotto_id
+    )
     if db.execute(query).scalar_one_or_none() is not None:
         raise ValueError("L'utente ha già recensito questo prodotto.")
 
@@ -67,7 +72,9 @@ def crea_recensione(db: Session, utente_id: int, prodotto_id: int, dati: ReviewC
     return recensione
 
 
-def aggiorna_recensione(db: Session, recensione: Review, dati: ReviewUpdate, utente: User) -> Review:
+def aggiorna_recensione(
+    db: Session, recensione: Review, dati: ReviewUpdate, utente: User
+) -> Review:
     verifica_puo_aggiornare(recensione.user_id, utente.id)
     for chiave, valore in dati.model_dump(exclude_unset=True).items():
         setattr(recensione, chiave, valore)
@@ -77,6 +84,7 @@ def aggiorna_recensione(db: Session, recensione: Review, dati: ReviewUpdate, ute
     ricalcola_valutazione_media(db, recensione.product_id)
     db.refresh(recensione)
     return recensione
+
 
 def elimina_recensione(db: Session, recensione: Review, utente: User) -> None:
     verifica_puo_eliminare(recensione.user_id, utente.id, utente.ruolo)

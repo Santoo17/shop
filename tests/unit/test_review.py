@@ -22,6 +22,7 @@ def test_nessuna_recensione_nessuna_media():
 def test_media_di_esempi_noti(valutazioni, atteso):
     assert calcola_media(valutazioni) == pytest.approx(atteso)
 
+
 def test_l_autore_puo_aggiornare():
     assert verifica_puo_aggiornare(autore_id=1, utente_id=1) is None
 
@@ -39,12 +40,13 @@ def test_eliminazione_vietata_a_chi_non_e_autore_ne_admin():
 
 
 def test_admin_puo_eliminare_recensione_di_un_altro_utente():
-    assert verifica_puo_eliminare(autore_id=1, utente_id=2, ruolo=UserRole.ADMIN) is None
-
+    assert (
+        verifica_puo_eliminare(autore_id=1, utente_id=2, ruolo=UserRole.ADMIN) is None
+    )
 
 
 @given(valutazioni=voti)
 def test_la_media_sta_tra_il_voto_minimo_e_massimo(valutazioni):
-    minimo=0
-    massimo=5    
+    minimo = 0
+    massimo = 5
     assert minimo <= calcola_media(valutazioni) <= massimo

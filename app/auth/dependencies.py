@@ -8,9 +8,10 @@ from app.models import User, UserRole
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
+
 def get_current_user(
-        token: str = Depends(oauth2_scheme),
-        db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db),
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -27,6 +28,7 @@ def get_current_user(
     if user is None:
         raise credentials_exception
     return user
+
 
 def require_admin_user(current_user: User = Depends(get_current_user)) -> User:
     if current_user.ruolo != UserRole.ADMIN:

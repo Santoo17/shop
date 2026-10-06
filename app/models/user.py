@@ -3,15 +3,19 @@ from sqlalchemy import BigInteger, Float, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from app.models.order import Order
     from app.models.review import Review
+
+
 class UserRole(str, enum.Enum):
     STANDARD = "standard"
     ADMIN = "admin"
 
+
 class User(Base):
-    __tablename__="users"
+    __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     nome: Mapped[str] = mapped_column(String(80), nullable=False)

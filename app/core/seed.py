@@ -5,13 +5,10 @@ from app.auth.hashing import hash_password
 
 
 def seed_db():
-    
-    Base.metadata.create_all(bind=engine) 
+    Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
-
         if db.query(User).filter(User.ruolo == UserRole.ADMIN).first():
-
             return
 
         # 3. Inserimento Utente Admin
@@ -20,11 +17,9 @@ def seed_db():
             cognome="Foti",
             email="admin@example.com",
             password_digest=hash_password("password123"),
-            ruolo=UserRole.ADMIN
+            ruolo=UserRole.ADMIN,
         )
         db.add(admin)
-
-
         db.commit()
         print("✅ Seeding completato con successo!")
 
@@ -35,7 +30,5 @@ def seed_db():
         db.close()
 
 
-
 if __name__ == "__main__":
     seed_db()
-

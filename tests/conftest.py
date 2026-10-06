@@ -1,4 +1,5 @@
 import os
+
 os.environ["TESTING"] = "1"
 import pytest
 from sqlalchemy import create_engine
@@ -9,15 +10,24 @@ from app.main import app
 from app.core.config import settings
 from app.auth import hash_password, create_access_token
 from app.core.database import get_db
-from app.models import Base, User, Product, DiscountCode, UserRole, Order, OrderStatus, Review
+from app.models import (
+    Base,
+    User,
+    Product,
+    DiscountCode,
+    UserRole,
+    Order,
+    OrderStatus,
+    Review,
+)
 
 import uuid
-
 
 engine_test = create_engine(settings.test_database_url)
 TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
 
 password_hash = hash_password("password123")
+
 
 @pytest.fixture(scope="session")
 def setup_database():
@@ -46,6 +56,7 @@ def client(db_session):
     yield TestClient(app)
     app.dependency_overrides.clear()
 
+
 @pytest.fixture
 def make_user():
     def _make_user(saldo=1500.0, ruolo=UserRole.STANDARD, **kwargs):
@@ -57,9 +68,11 @@ def make_user():
             password_digest=password_hash,
             saldo=saldo,
             ruolo=ruolo,
-            **kwargs
+            **kwargs,
         )
+
     return _make_user
+
 
 @pytest.fixture
 def make_product():
@@ -69,20 +82,21 @@ def make_product():
             descrizione="Descrizione",
             prezzo=prezzo,
             giacenza=giacenza,
-            **kwargs
+            **kwargs,
         )
+
     return _make_product
+
 
 @pytest.fixture
 def make_discount():
     def _make_discount(codice="TEST10", percentuale=10, attivo=True, **kwargs):
         return DiscountCode(
-            codice=codice,
-            percentuale=percentuale,
-            attivo=attivo,
-            **kwargs
+            codice=codice, percentuale=percentuale, attivo=attivo, **kwargs
         )
+
     return _make_discount
+
 
 @pytest.fixture()
 def make_order(db_session, make_user):
@@ -91,7 +105,7 @@ def make_order(db_session, make_user):
         db_session.add(user)
         db_session.commit()
 
-        token = create_access_token({"sub": str(user.id)})  
+        token = create_access_token({"sub": str(user.id)})
 
         default = {
             "user_id": user.id,
@@ -101,7 +115,9 @@ def make_order(db_session, make_user):
         }
         default.update(kwargs)
         return Order(**default), user, token
+
     return _make_order
+
 
 @pytest.fixture()
 def make_review(db_session):
@@ -112,7 +128,9 @@ def make_review(db_session):
         }
         default.update(kwargs)
         return Review(**default)
+
     return _make_review
+
 
 @pytest.fixture()
 def get_user_token(db_session, make_user):
@@ -121,7 +139,9 @@ def get_user_token(db_session, make_user):
         db_session.add(user)
         db_session.commit()
         return create_access_token({"sub": str(user.id)})
+
     return _get_user_token
+
 
 @pytest.fixture()
 def admin_token(get_user_token):

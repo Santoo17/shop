@@ -1,10 +1,11 @@
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+
 class ProductCreate(BaseModel):
     nome: str
     descrizione: str | None = None
-    prezzo: float 
-    giacenza: int 
+    prezzo: float
+    giacenza: int
 
     @field_validator("prezzo")
     @classmethod
@@ -19,8 +20,7 @@ class ProductCreate(BaseModel):
         if valore < 0:
             raise ValueError("La giacenza non può essere negativa")
         return valore
-    
-    
+
 
 class ProductRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -30,6 +30,7 @@ class ProductRead(BaseModel):
     prezzo: float
     giacenza: int
     valutazione_media: float | None
+
 
 class ProductUpdate(BaseModel):
     nome: str | None = None
@@ -51,5 +52,8 @@ class ProductUpdate(BaseModel):
             raise ValueError("La giacenza non può essere negativa")
         return valore
 
+
 class ProductAddGiacenza(BaseModel):
-    giacenza: int = Field(ge=0, description="La giacenza da aggiungere non può essere negativa")
+    giacenza: int = Field(
+        ge=0, description="La giacenza da aggiungere non può essere negativa"
+    )
