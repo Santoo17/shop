@@ -17,6 +17,7 @@ import uuid
 engine_test = create_engine(settings.test_database_url)
 TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
 
+password_hash = hash_password("password123")
 
 @pytest.fixture(scope="session")
 def setup_database():
@@ -47,14 +48,13 @@ def client(db_session):
 
 @pytest.fixture
 def make_user():
-    default_password_hash = hash_password("password123")
     def _make_user(saldo=1500.0, ruolo=UserRole.STANDARD, **kwargs):
         unique_email = f"user_{uuid.uuid4().hex[:6]}@example.com"
         return User(
             nome="Mario",
             cognome="Rossi",
             email=kwargs.pop("email", unique_email),
-            password_digest=default_password_hash,
+            password_digest=password_hash,
             saldo=saldo,
             ruolo=ruolo,
             **kwargs
