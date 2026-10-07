@@ -41,6 +41,9 @@ def checkout(
     if utente.saldo < totale:
         raise ValueError("Saldo insufficiente")
 
+    if totale <= 0:
+        raise ValueError("Il totale dell'ordine deve essere maggiore di zero")
+
     ordine = Order(
         user_id=utente.id,
         totale=totale,

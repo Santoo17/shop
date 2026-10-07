@@ -2,7 +2,7 @@ from app.models import UserRole, OrderStatus
 
 
 def test_ordine_creato_con_successo(client, db_session, get_user_token, make_product):
-    user = get_user_token()
+    user = get_user_token(saldo=100.0)
     product = make_product(prezzo=20.0, giacenza=10)
     db_session.add(product)
     db_session.commit()
@@ -21,6 +21,7 @@ def test_ordine_creato_con_successo(client, db_session, get_user_token, make_pro
     assert data["totale"] == 40.0
     assert data["stato"] == OrderStatus.CONFERMATO
     assert product.giacenza == 8
+    assert client.get("/users/me", headers={"Authorization": f"Bearer {user}"}).json()["saldo"] == 60.0
 
 
 def test_ordine_fallito_per_giacenza_insufficiente(
@@ -41,6 +42,7 @@ def test_ordine_fallito_per_giacenza_insufficiente(
     assert response.status_code == 400
     assert  "Quantità insufficiente" in response.json()["detail"]
     assert product.giacenza == 1
+    assert client.get("/users/me", headers={"Authorization": f"Bearer {user}"}).json()["saldo"] == 100.0
 
 
 def test_ordine_con_righe_accumulate_fallito_per_giacenza_insufficiente(
@@ -61,6 +63,27 @@ def test_ordine_con_righe_accumulate_fallito_per_giacenza_insufficiente(
     assert response.status_code == 400
     assert  "Quantità insufficiente" in response.json()["detail"]
     assert product.giacenza == 1
+    assert client.get("/users/me", headers={"Authorization": f"Bearer {user}"}).json()["saldo"] == 100.0
+
+
+def test_ordine_con_righe_accumulate_successo(
+    client, db_session, get_user_token, make_product
+):
+    user = get_user_token(saldo=100.0)
+    product = make_product(prezzo=20.0, giacenza=3)
+    db_session.add(product)
+    db_session.commit()
+    response = client.post(
+        "/checkout",
+        json={
+            "items": [{"product_id": product.id, "quantita": 1}, {"product_id": product.id, "quantita": 1}],
+            "codice_sconto": None,
+        },
+        headers={"Authorization": f"Bearer {user}"},
+    )
+    assert response.status_code == 201
+    assert client.get("/users/me", headers={"Authorization": f"Bearer {user}"}).json()["saldo"] == 60.0
+    assert product.giacenza == 1
 
 
 def test_ordine_fallito_per_saldo_insufficiente(
@@ -79,6 +102,7 @@ def test_ordine_fallito_per_saldo_insufficiente(
         headers={"Authorization": f"Bearer {user}"},
     )
     assert response.status_code == 400
+    assert client.get("/users/me", headers={"Authorization": f"Bearer {user}"}).json()["saldo"] == 10.0
     assert "Saldo insufficiente" in response.json()["detail"]
 
 
@@ -98,6 +122,7 @@ def test_ordine_fallito_per_codice_sconto_non_valido(
         headers={"Authorization": f"Bearer {user}"},
     )
     assert response.status_code == 400
+    assert client.get("/users/me", headers={"Authorization": f"Bearer {user}"}).json()["saldo"] == 100.0
 
 
 def test_ordine_fallito_per_prodotto_non_esistente(client, get_user_token):
@@ -111,6 +136,7 @@ def test_ordine_fallito_per_prodotto_non_esistente(client, get_user_token):
         headers={"Authorization": f"Bearer {user}"},
     )
     assert response.status_code == 400
+    assert client.get("/users/me", headers={"Authorization": f"Bearer {user}"}).json()["saldo"] == 100.0
 
 
 def test_ordine_fallito_per_assenza_autenticazione(client, db_session, make_product):
@@ -178,7 +204,7 @@ def test_utente_non_visualizza_dettaglio_ordine_altri(
     assert response.status_code == 404
 
 
-def test_rimborso_ordine(client, make_order, db_session):
+def test_rimborso_ordine_successo(client, make_order, db_session):
     ordine, user, token = make_order()
     db_session.add(ordine)
     db_session.commit()
