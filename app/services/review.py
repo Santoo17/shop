@@ -28,7 +28,7 @@ def ha_acquistato_prodotto(db: Session, utente_id: int, prodotto_id: int) -> boo
         .where(
             Order.user_id == utente_id,
             OrderItem.product_id == prodotto_id,
-            Order.stato == OrderStatus.CONSEGNATO,
+             Order.stato.in_([OrderStatus.CONSEGNATO, OrderStatus.RIMBORSATO]),
         )
         .limit(1)
     )
@@ -49,7 +49,7 @@ def crea_recensione(
 ) -> Review:
     if not ha_acquistato_prodotto(db, utente_id, prodotto_id):
         raise ValueError(
-            "L'utente non ha acquistato questo prodotto e non può recensirlo."
+            "L'utente non ha acquistato questo prodotto, oppure non è stato consegnato e non può recensirlo."
         )
     query = select(Review).where(
         Review.user_id == utente_id, Review.product_id == prodotto_id
