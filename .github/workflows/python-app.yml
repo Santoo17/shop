@@ -55,7 +55,9 @@ jobs:
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         ALGORITHM: ${{ secrets.ALGORITHM }}
         ACCESS_TOKEN_EXPIRE_MINUTES: 60
-      run: uv run pytest
+      run: |
+        uv run coverage run -m pytest
+        uv run coverage report -m
 
   build-and-push:
     needs: build
