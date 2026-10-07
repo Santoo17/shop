@@ -28,13 +28,13 @@ def checkout(
 ) -> Order:
     quantita_per_prodotto = aggrega_carrello(carello)
     prodotti: list[tuple[Product, int]] = []
-    for riga in carello:
-        prodotto = db.get(Product, riga.product_id)
+    for product_id, quantita in quantita_per_prodotto.items():
+        prodotto = db.get(Product, product_id)
         if prodotto is None:
-            raise ValueError(f"Prodotto con ID {riga.product_id} non trovato")
-        if prodotto.giacenza < riga.quantita:
+            raise ValueError(f"Prodotto con ID {product_id} non trovato")
+        if prodotto.giacenza < quantita:
             raise ValueError(f"Quantità insufficiente per il prodotto {prodotto.nome}")
-        prodotti.append((prodotto, riga.quantita))
+        prodotti.append((prodotto, quantita))
     totale = sum(prodotto.prezzo * quantita for prodotto, quantita in prodotti)
     totale = applica_sconto(db, totale, codice_sconto)
 

@@ -20,6 +20,7 @@ def test_ordine_creato_con_successo(client, db_session, get_user_token, make_pro
     data = response.json()
     assert data["totale"] == 40.0
     assert data["stato"] == OrderStatus.CONFERMATO
+    assert product.giacenza == 8
 
 
 def test_ordine_fallito_per_giacenza_insufficiente(
@@ -38,6 +39,28 @@ def test_ordine_fallito_per_giacenza_insufficiente(
         headers={"Authorization": f"Bearer {user}"},
     )
     assert response.status_code == 400
+    assert  "Quantità insufficiente" in response.json()["detail"]
+    assert product.giacenza == 1
+
+
+def test_ordine_con_righe_accumulate_fallito_per_giacenza_insufficiente(
+    client, db_session, get_user_token, make_product
+):
+    user = get_user_token(saldo=100.0)
+    product = make_product(prezzo=20.0, giacenza=1)
+    db_session.add(product)
+    db_session.commit()
+    response = client.post(
+        "/checkout",
+        json={
+            "items": [{"product_id": product.id, "quantita": 1}, {"product_id": product.id, "quantita": 1}],
+            "codice_sconto": None,
+        },
+        headers={"Authorization": f"Bearer {user}"},
+    )
+    assert response.status_code == 400
+    assert  "Quantità insufficiente" in response.json()["detail"]
+    assert product.giacenza == 1
 
 
 def test_ordine_fallito_per_saldo_insufficiente(
@@ -56,6 +79,7 @@ def test_ordine_fallito_per_saldo_insufficiente(
         headers={"Authorization": f"Bearer {user}"},
     )
     assert response.status_code == 400
+    assert "Saldo insufficiente" in response.json()["detail"]
 
 
 def test_ordine_fallito_per_codice_sconto_non_valido(
@@ -69,7 +93,7 @@ def test_ordine_fallito_per_codice_sconto_non_valido(
         "/checkout",
         json={
             "items": [{"product_id": product.id, "quantita": 1}],
-            "codice_sconto": "INVALIDCODE",
+            "codice_sconto": "CodiceNonValido",
         },
         headers={"Authorization": f"Bearer {user}"},
     )
@@ -176,8 +200,9 @@ def test_rimborso_ordine_non_autorizzato(
     db_session.add(ordine)
     db_session.commit()
     user2 = get_user_token()
+    order_id = ordine.id
     response = client.post(
-        f"/orders/{ordine.id}/rimborso", headers={"Authorization": f"Bearer {user2}"}
+        f"/orders/{order_id}/rimborso", headers={"Authorization": f"Bearer {user2}"}
     )
     assert response.status_code == 400
 

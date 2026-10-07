@@ -59,7 +59,7 @@ def test_utente_admin_modifica_altri_successo(
 def test_utente_admin_modifica_altri_fallisce_se_non_esiste(client, admin_token):
     admin = admin_token
     response = client.put(
-        f"/users/9999",
+        "/users/9999",
         headers={"Authorization": f"Bearer {admin}"},
         json={"nome": "NuovoNome"},
     )
@@ -120,6 +120,6 @@ def test_utente_admin_elimina_altri_fallisce_se_non_esiste(
 ):
     admin = admin_token
     response = client.delete(
-        f"/users/9999", headers={"Authorization": f"Bearer {admin}"}
+        "/users/9999", headers={"Authorization": f"Bearer {admin}"}
     )
     assert response.status_code == 404
