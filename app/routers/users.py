@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from app.core import get_db
+from app.services.review import ricalcola_valutazione_media
 from app.models import User
 from app.schemas import UserRead, UserUpdate, AdminUpdate, AdminAddSaldo
 from app.auth import get_current_user, require_admin_user
@@ -31,8 +32,11 @@ def update_me(
 
 @router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
 def delete_me(db: Session = Depends(get_db), utente: User = Depends(get_current_user)):
+    product_ids = {r.product_id for r in utente.reviews}
     db.delete(utente)
     db.commit()
+    for product_id in product_ids:
+        ricalcola_valutazione_media(db, product_id)
     return None
 
 
@@ -76,8 +80,11 @@ def delete_user(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Utente non trovato"
         )
+    product_ids = {r.product_id for r in utente.reviews}
     db.delete(utente)
     db.commit()
+    for product_id in product_ids:
+        ricalcola_valutazione_media(db, product_id)
     return None
 
 

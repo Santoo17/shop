@@ -11,5 +11,6 @@ from app.services.review import (
     calcola_media,
     verifica_puo_aggiornare,
     verifica_puo_eliminare,
+    ricalcola_valutazione_media,
 )
 from app.services.checkout import checkout, aggrega_carrello, RigaCarrello
