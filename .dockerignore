@@ -8,3 +8,5 @@
 htmlcov
 README.md
 frontend/
+tests/
+docs/
