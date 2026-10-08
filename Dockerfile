@@ -22,4 +22,4 @@ ENV PATH="/app/.venv/bin:$PATH" \
 
 EXPOSE 8000
 
-ENTRYPOINT ["sh", "-c", "python -m app.core.seed && exec python -m uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
