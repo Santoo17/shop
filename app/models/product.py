@@ -20,5 +20,5 @@ class Product(Base):
         Float, nullable=True, default=None
     )
 
-    order_items: Mapped[list["OrderItem"]] = relationship(back_populates="product")
-    reviews: Mapped[list["Review"]] = relationship(back_populates="product")
+    order_items: Mapped[list["OrderItem"]] = relationship(back_populates="product", cascade="all, delete-orphan")
+    reviews: Mapped[list["Review"]] = relationship(back_populates="product", cascade="all, delete-orphan")

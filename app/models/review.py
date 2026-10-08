@@ -19,10 +19,10 @@ class Review(Base):
     commento: Mapped[str | None] = mapped_column(Text, nullable=True)
     valutazione: Mapped[int] = mapped_column(Integer, nullable=False)
     user_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("users.id"), nullable=False
+        BigInteger, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
     product_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("products.id"), nullable=False
+        BigInteger, ForeignKey("products.id", ondelete="CASCADE"), nullable=False
     )
 
     user: Mapped["User"] = relationship(back_populates="reviews")

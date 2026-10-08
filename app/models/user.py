@@ -26,5 +26,5 @@ class User(Base):
     indirizzo: Mapped[str | None] = mapped_column(String(255), nullable=True)
     saldo: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
 
-    orders: Mapped[list["Order"]] = relationship(back_populates="user")
-    reviews: Mapped[list["Review"]] = relationship(back_populates="user")
+    orders: Mapped[list["Order"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    reviews: Mapped[list["Review"]] = relationship(back_populates="user", cascade="all, delete-orphan")

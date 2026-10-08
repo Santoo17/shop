@@ -13,10 +13,10 @@ class OrderItem(Base):
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     order_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("orders.id"), nullable=False
+        BigInteger, ForeignKey("orders.id", ondelete="CASCADE"), nullable=False
     )
     product_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("products.id"), nullable=False
+        BigInteger, ForeignKey("products.id", ondelete="CASCADE"), nullable=False
     )
     quantita: Mapped[int] = mapped_column(Integer, nullable=False)
     prezzo_unitario: Mapped[float] = mapped_column(Float, nullable=False)
