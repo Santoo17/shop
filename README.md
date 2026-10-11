@@ -112,3 +112,5 @@ I test di integrazione richiedono un database PostgreSQL di test, configurato co
 ## Documentazione
 
 - [User Story](docs/user_story.md)
+- [Endpoint](docs/API.md)
+- [Schemi](docs/schema.md)
