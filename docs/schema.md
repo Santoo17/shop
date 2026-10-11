@@ -8,7 +8,7 @@
 |--------|-------|------|-------|---------|
 | `UserCreate` | `nome` | stringa | sì | - |
 | `UserCreate` | `cognome` | stringa | sì | - |
-| `UserCreate` | `email` | stringa | sì | formato email |
+| `UserCreate` | `email` | stringa | sì | formato email, univoca |
 | `UserCreate` | `password` | stringa | sì | - |
 | `UserCreate` | `indirizzo` | stringa o null | no | - |
 | `UserRead` | `id` | intero | sì | - |
@@ -22,6 +22,13 @@
 | `AdminAddSaldo` | `saldo` | float | sì | minimo 0  |
 | `Token` | `access_token` | stringa | sì | - |
 | `Token` | `token_type` | stringa | sì | - |
+
+## Valori per `UserRole`
+| Tipo | Valore |
+|--------|-------|
+| `UserRole.ADMIN` | amministratore |
+| `UserRole.STANDARD` | utente base |
+
 
 ## Prodotti e recensioni
 
@@ -75,10 +82,9 @@
 | `OrderRead` | `id`, `user_id` | intero | sì | - |
 | `OrderRead` | `totale` | float | sì | totale dopo lo sconto |
 | `OrderRead` | `stato` | stringa |     ANNULLATO --> [*]
-    RIMBORSATO --> [*]sì | valore di `OrderStatus` |
 | `OrderRead` | `codice_sconto` | stringa o null | sì | - |
 | `OrderRead` | `items` | lista di `OrderItemRead` | sì | - |
-| `OrderStatusUpdate` | `stato` | stringa | sì | l'aggiornamento deve essere valido |
+| `OrderStatusUpdate` | `stato` | stringa | sì | l'aggiornamento deve essere tra i consentiti |
 
 
 ## Transizioni di stato valide per un ordine
