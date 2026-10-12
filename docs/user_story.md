@@ -1,7 +1,7 @@
 | ID | Come | Voglio | Per |
 |----|------|--------|-----|
 | US-01 | ospite | registrarmi | poter usare il negozio e avere un'area personale |
-| US-02 | ospite | autenticarmi con email e password e ottenere un token | accedere alle funzioni protette |
+| US-02 | ospite | autenticarmi con email e password | accedere alle funzioni protette |
 | US-03 | ospite | consultare elenco e dettaglio dei prodotti con prezzo, giacenza e valutazione media | scegliere cosa comprare |
 | US-04 | ospite | leggere le recensioni di un prodotto | valutarne la qualità |
 | US-05 | utente | scrivere una recensione con valutazione e commento | condividere la mia opinione sui miei acquisti |
@@ -17,3 +17,16 @@
 | US-15 | amministratore | aggiungere saldo a un utente | permettergli di acquistare |
 | US-16 | amministratore | creare, modificare ed eliminare codici sconto | gestire le promozioni |
 | US-17 | amministratore | aggiornare lo stato di un ordine | far avanzare il processo |
+
+
+| ID | Come | Non voglio |
+|----|------|--------|-----|
+| US-18 | registrato | che altri possano accedere al mio profilo |
+| US-19 | registrato | che altri utenti possano vedere il mio profilo o i miei ordini |
+| US-20 | registrato | che altri utenti possano modificare le mie recensioni |
+| US-21 | registrato | che altri utenti possano effettuare ordini dal mio profilo |
+| US-22 | amministratore | un utente possa aggiornare lo stato di un ordine |
+| US-23 | amministratore | un utente possa aggiungere prodotti |
+| US-24 | amministratore | un utente possa modificare i dettagli di prodotti già presenti | 
+| US-25 | amministratore | un utente possa eliminare i prodotti già presenti |
+| US-26 | amministratore | un utente possa moficare il suo saldo | 
