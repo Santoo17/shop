@@ -115,4 +115,4 @@ I test di integrazione richiedono un database PostgreSQL di test, configurato co
 - [Endpoint](docs/API.md)
 - [Schemi](docs/schema.md)
 - [DFD1](docs/DFD/DFD0.drawio.png)
-- [DFD Raffinato](docs/DFD/DFD1_FINALE.drawio.png)
+- [DFD Raffinato](docs/DFD/DFD1.1.drawio.png)
