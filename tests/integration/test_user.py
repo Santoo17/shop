@@ -54,8 +54,13 @@ def test_utente_admin_modifica_altri_successo(
         json={"nome": "NuovoNome"},
     )
     assert response.status_code == 200
+    response=client.get(
+        f"/users/{user_id}",
+        headers={"Authorization": f"Bearer {admin}"},
+    )
+    assert response.json()["nome"] == "NuovoNome"
 
-
+    
 def test_utente_admin_modifica_altri_fallisce_se_non_esiste(client, admin_token):
     admin = admin_token
     response = client.put(

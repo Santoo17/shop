@@ -49,6 +49,20 @@ def list_users(
     return utenti
 
 
+@router.get("/{user_id}", response_model=UserRead)
+def get_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_admin_user),
+):
+    utente = db.get(User, user_id)
+    if not utente:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Utente non trovato"
+        )
+    return utente
+
+
 @router.put("/{user_id}", response_model=UserRead)
 def update_user(
     user_id: int,
