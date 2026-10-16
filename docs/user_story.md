@@ -1,3 +1,5 @@
+## User stories 
+
 | ID | Come | Voglio | Per |
 |----|------|--------|-----|
 | US-01 | ospite | registrarmi | poter usare il negozio e avere un'area personale |
@@ -18,9 +20,10 @@
 | US-16 | amministratore | creare, modificare ed eliminare codici sconto | gestire le promozioni |
 | US-17 | amministratore | aggiornare lo stato di un ordine | far avanzare il processo |
 
+## User stories negative
 
 | ID | Come | Non voglio |
-|----|------|--------|-----|
+|----|------|--------|
 | US-18 | registrato | che altri possano accedere al mio profilo |
 | US-19 | registrato | che altri utenti possano vedere il mio profilo o i miei ordini |
 | US-20 | registrato | che altri utenti possano modificare le mie recensioni |
