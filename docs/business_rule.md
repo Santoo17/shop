@@ -13,28 +13,5 @@
 | BR-10 | Se un utente rimborsa o annulla un ordine, l'intero ammontare dell'ordine gli viene restituito |
 | BR-11 | Un utente può recensire un prodotto solo se esiste un ordine associato a quell'utente contenente quel prodotto nello stato "Consegnato/Rimborsato"|
 | BR-12 | Un utente può recensire un singolo prodotto al più una volta |
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+| BR-13 | Alla registrazione ogni utente ha ruolo "Standard" |
+| BR-14 | L'indirizzo email di ogni utente deve essere univoca e in formato valido: nome@dominio.dominio |
