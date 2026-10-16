@@ -38,19 +38,19 @@ def setup_database():
 
 @pytest.fixture()
 def db_session(setup_database):
-    connection = engine_test.connect()
-    transaction = connection.begin()
-    session = TestSessionLocal(bind=connection)
-    yield session
-    session.close()
-    transaction.rollback()
-    connection.close()
+    connection = engine_test.connect() #prende una connessione dal pool.
+    transaction = connection.begin() #apre una transazione su quella connessione
+    session = TestSessionLocal(bind=connection) #crea una sessione legata a quella connessione specifica, e non all’engine.
+    yield session #consegna la sessione al test
+    session.close() #chiude la sessione e rilascia le sue risorse
+    transaction.rollback() #annulla la transazione, così tutte le modifiche fatte durante il test vengono annullate
+    connection.close() #rilascia la connessione al pool, così che possa essere riutilizzata da altri test o parti dell’applicazione.
 
 
 @pytest.fixture()
 def client(db_session):
-    def override_get_db():
-        yield db_session
+    def override_get_db(): 
+        yield db_session 
 
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
@@ -60,11 +60,10 @@ def client(db_session):
 @pytest.fixture
 def make_user():
     def _make_user(saldo=1500.0, ruolo=UserRole.STANDARD, **kwargs):
-        unique_email = f"user_{uuid.uuid4().hex[:6]}@example.com"
         return User(
             nome="Mario",
             cognome="Rossi",
-            email=kwargs.pop("email", unique_email),
+            email= f"user_{uuid.uuid4().hex[:6]}@example.com",
             password_digest=password_hash,
             saldo=saldo,
             ruolo=ruolo,
