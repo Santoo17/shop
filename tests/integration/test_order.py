@@ -208,6 +208,7 @@ def test_rimborso_ordine_successo(client, make_order, db_session):
     ordine, user, token = make_order()
     db_session.add(ordine)
     db_session.commit()
+    saldo_iniziale =  user.saldo
     response = client.post(
         f"/orders/{ordine.id}/rimborso", headers={"Authorization": f"Bearer {token}"}
     )
@@ -217,6 +218,7 @@ def test_rimborso_ordine_successo(client, make_order, db_session):
         data["stato"] == OrderStatus.ANNULLATO
         or data["stato"] == OrderStatus.RIMBORSATO
     )
+    assert user.saldo == saldo_iniziale + ordine.totale
 
 
 def test_rimborso_ordine_non_autorizzato(
