@@ -11,7 +11,6 @@ def seed_db():
         if db.query(User).filter(User.ruolo == UserRole.ADMIN).first():
             return
 
-        # 3. Inserimento Utente Admin
         admin = User(
             nome="Santo",
             cognome="Foti",
